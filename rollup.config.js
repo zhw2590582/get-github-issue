@@ -19,7 +19,7 @@ module.exports = {
     input: 'src/index.js',
     output: {
         name,
-        file: isProd ? `dist/${name}.js` : `docs/uncompiled/${name}.js`,
+        file: isProd ? `dist/${name}.js` : `dist/uncompiled-${name}.js`,
         format: 'umd',
         exports: 'named',
         sourcemap: !isProd,
