@@ -1,5 +1,5 @@
 {
-  "name": "issue-blog",
+  "name": "@zhw2590582/issue-blog",
   "version": "1.0.0",
   "description": "A util to turn github issue into a blog.",
   "main": "index.js",

@@ -9,7 +9,7 @@ $ npm i -S issue-blog
 ```
 
 ```js
-import IssueBlog from 'issue-blog';
+import IssueBlog from '@zhw2590582/issue-blog';
 ```
 
 Or umd builds are also available
