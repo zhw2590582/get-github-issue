@@ -19,14 +19,6 @@ class IssueBlog {
         });
     }
 
-    static get version() {
-        return '__VERSION__';
-    }
-
-    static get env() {
-        return '__ENV__';
-    }
-
     static get DEFAULTS() {
         return {
             owner: '',
