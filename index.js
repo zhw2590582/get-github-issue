@@ -114,6 +114,8 @@ class IssueBlog {
             tags: issue.labels.filter(tag => tag.name !== this.option.postLabel).map(tag => tag.name),
             url: issue.url,
             id: issue.number,
+            excerpt: '',
+            poster: '',
         };
 
         try {
@@ -126,7 +128,7 @@ class IssueBlog {
             // eslint-disable-next-line
             post.poster = /src=[\'\"]?([^\'\"]*)[\'\"]?/i.exec(/<img.*?(?:>|\/>)/.exec(issue.body_html)[0])[1];
         } catch (error) {
-            post.poster = 'poster.png';
+            post.poster = '';
         }
 
         return post;
