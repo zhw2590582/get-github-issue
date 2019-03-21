@@ -16,7 +16,7 @@ const banner =
     ' */\n';
 
 module.exports = {
-    input: 'src/index.js',
+    input: 'index.js',
     output: {
         name,
         file: isProd ? `dist/${name}.js` : `dist/uncompiled-${name}.js`,

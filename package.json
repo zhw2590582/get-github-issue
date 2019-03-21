@@ -2,12 +2,11 @@
   "name": "issue-blog",
   "version": "1.0.0",
   "description": "A util to turn github issue into a blog.",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development rollup -c -m -w",
     "build": "cross-env NODE_ENV=production rollup -c",
-    "lint": "eslint src",
-    "test": "node test/index.test.js"
+    "test": "eslint src"
   },
   "repository": {
     "type": "git",
