@@ -5,7 +5,7 @@
 ## Install
 
 ```
-$ npm i -S issue-blog
+$ npm i -S @zhw2590582/issue-blog
 ```
 
 ```js
