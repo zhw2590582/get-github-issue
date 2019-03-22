@@ -1,7 +1,7 @@
 {
-  "name": "@zhw2590582/issue-blog",
+  "name": "get-github-issue",
   "version": "1.0.2",
-  "description": "A util to turn github issue into a blog.",
+  "description": "A util to get github issue",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development rollup -c -m -w",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhw2590582/issue-blog.git"
+    "url": "git+https://github.com/zhw2590582/get-github-issue.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/zhw2590582/issue-blog/issues"
+    "url": "https://github.com/zhw2590582/get-github-issue/issues"
   },
-  "homepage": "https://github.com/zhw2590582/issue-blog#readme",
+  "homepage": "https://github.com/zhw2590582/get-github-issue#readme",
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@babel/plugin-external-helpers": "^7.2.0",

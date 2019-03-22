@@ -8,12 +8,12 @@ function truncateString(str, num) {
     return str.length > num ? `${str.slice(0, num > 3 ? num - 3 : num)}...` : str;
 }
 
-class IssueBlog {
+class GetGithubIssue {
     constructor(option = {}) {
         this.cache = new Map();
-        this.option = Object.assign({}, IssueBlog.DEFAULTS, option);
-        Object.keys(IssueBlog.DEFAULTS).forEach(key => {
-            if (this.option[key] === '') {
+        this.option = Object.assign({}, GetGithubIssue.DEFAULTS, option);
+        ['owner', 'repo', 'clientID', 'clientSecret'].forEach(key => {
+            if (!this.option[key]) {
                 throw new TypeError(`option.${key} can not be empty.`);
             }
         });
@@ -28,8 +28,9 @@ class IssueBlog {
             cache: true,
             excerpt: 120,
             pageSize: 10,
-            postLabel: 'post',
-            pageLabel: 'page',
+            postLabel: 'POST',
+            pageLabel: 'PAGE',
+            requestType: 'full',
             loadFn: state => state,
         };
     }
@@ -54,7 +55,7 @@ class IssueBlog {
         return fetch(url, {
             headers: {
                 'Content-Type': 'application/json',
-                Accept: `application/vnd.github.v3.full+json`,
+                Accept: `application/vnd.github.v3.${this.option.requestType}+json`,
             },
         })
             .then(res => {
@@ -68,40 +69,6 @@ class IssueBlog {
                 this.option.loadFn(false);
                 throw err;
             });
-    }
-
-    byPage({ page = 1, labels = '', isPage = false }) {
-        const key = `page=${page}&labels=${labels}&isPage=${isPage}`;
-        if (this.option.cache && this.cache.has(key)) {
-            return Promise.resolve(this.cache.get(key));
-        }
-
-        const url = this.getUrl({
-            page,
-            per_page: this.option.pageSize,
-            labels: `${isPage ? this.option.pageLabel : this.option.postLabel},${labels}`,
-        });
-
-        return this.getRequest(url).then(data => {
-            const result = data.map(item => this.format(item));
-            this.cache.set(key, result);
-            return result;
-        });
-    }
-
-    byId(id) {
-        const key = `id=${id}`;
-        if (this.option.cache && this.cache.has(key)) {
-            return Promise.resolve(this.cache.get(key));
-        }
-
-        const url = this.getUrl(Number(id));
-
-        return this.getRequest(url).then(data => {
-            const result = this.format(data);
-            this.cache.set(key, result);
-            return result;
-        });
     }
 
     format(issue) {
@@ -133,7 +100,50 @@ class IssueBlog {
 
         return post;
     }
+
+    byPage({ page = 1, labels = '', isPage = false }) {
+        const key = `page=${page}&labels=${labels}&isPage=${isPage}`;
+        if (this.option.cache && this.cache.has(key)) {
+            return Promise.resolve(this.cache.get(key));
+        }
+
+        const url = this.getUrl({
+            page,
+            per_page: this.option.pageSize,
+            labels: `${isPage ? this.option.pageLabel : this.option.postLabel},${labels}`,
+        });
+
+        return this.getRequest(url).then(data => {
+            const result = data.map(item => {
+                if (this.option.cache) {
+                    this.cache.set(`id=${item.number}`, item);
+                }
+                return this.format(item);
+            });
+            if (this.option.cache) {
+                this.cache.set(key, result);
+            }
+            return result;
+        });
+    }
+
+    byId(id) {
+        const key = `id=${id}`;
+        if (this.option.cache && this.cache.has(key)) {
+            return Promise.resolve(this.cache.get(key));
+        }
+
+        const url = this.getUrl(Number(id));
+
+        return this.getRequest(url).then(data => {
+            const result = this.format(data);
+            if (this.option.cache) {
+                this.cache.set(key, result);
+            }
+            return result;
+        });
+    }
 }
 
-window.IssueBlog = IssueBlog;
-export default IssueBlog;
+window.GetGithubIssue = GetGithubIssue;
+export default GetGithubIssue;
