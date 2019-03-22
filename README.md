@@ -27,12 +27,15 @@ const issue = new GetGithubIssue({
     repo: '', // GitHub repo
     owner: '', // GitHub repo owner
     cache: true, // Whether to use the cache
-    excerpt: 120, // Excerpt length 
+    excerpt: 120, // Excerpt length
     pageSize: 10, // Length per page
-    postLabel: 'POST', // Post label
-    pageLabel: 'PAGE', // Page label
     requestType: 'full', // Custom media types: raw | text | html | full
     loadFn: state => state, // Loading status
+    labels: {
+        post: 'POST', // Post label
+        page: 'PAGE', // Post label
+        config: 'CONFIG', // Config label
+    },
 });
 
 // Get through pagination and tags
@@ -40,7 +43,7 @@ issue
     .byPage({
         page: 1, // Custom page number
         labels: 'code', // Custom labels
-        isPage: false, // Whether the page type
+        type: 'POST', // Label type
     })
     .then(data => {
         console.log(data);

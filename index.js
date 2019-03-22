@@ -14,7 +14,7 @@ class GetGithubIssue {
         this.option = Object.assign({}, GetGithubIssue.DEFAULTS, option);
         ['owner', 'repo', 'clientID', 'clientSecret'].forEach(key => {
             if (!this.option[key]) {
-                throw new TypeError(`option.${key} can not be empty.`);
+                throw new TypeError(`[option.${key}] can not be empty.`);
             }
         });
     }
@@ -28,10 +28,13 @@ class GetGithubIssue {
             cache: true,
             excerpt: 120,
             pageSize: 10,
-            postLabel: 'POST',
-            pageLabel: 'PAGE',
             requestType: 'full',
             loadFn: state => state,
+            labels: {
+                post: 'POST',
+                page: 'PAGE',
+                config: 'CONFIG',
+            },
         };
     }
 
@@ -78,7 +81,9 @@ class GetGithubIssue {
             created_at: issue.created_at,
             updated_at: issue.updated_at,
             comments: issue.comments,
-            tags: issue.labels.filter(tag => tag.name !== this.option.postLabel).map(tag => tag.name),
+            tags: issue.labels
+                .filter(tag => !Object.values(this.option.labels).includes(tag.name))
+                .map(tag => tag.name),
             url: issue.url,
             id: issue.number,
             excerpt: '',
@@ -101,16 +106,21 @@ class GetGithubIssue {
         return post;
     }
 
-    byPage({ page = 1, labels = '', isPage = false }) {
-        const key = `page=${page}&labels=${labels}&isPage=${isPage}`;
+    byPage({ page = 1, labels = '', type = this.option.labels.post }) {
+        const key = `page=${page}&labels=${labels}&type=${type}`;
         if (this.option.cache && this.cache.has(key)) {
             return Promise.resolve(this.cache.get(key));
+        }
+
+        const buildInLabels = Object.values(this.option.labels);
+        if (!buildInLabels.includes(type)) {
+            throw new TypeError(`[type] only accept: ${buildInLabels.join('|')}.`);
         }
 
         const url = this.getUrl({
             page,
             per_page: this.option.pageSize,
-            labels: `${isPage ? this.option.pageLabel : this.option.postLabel},${labels}`,
+            labels: `${type},${labels}`,
         });
 
         return this.getRequest(url).then(data => {
